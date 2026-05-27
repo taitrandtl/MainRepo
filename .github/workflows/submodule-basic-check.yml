@@ -1,0 +1,49 @@
+name: Submodule Basic Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check-submodule:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout MainRepo with submodule
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Show current repo info
+        run: |
+          echo "Current branch/ref:"
+          git branch -a
+          echo ""
+          echo "Current MainRepo commit:"
+          git rev-parse HEAD
+
+      - name: Show submodule status
+        run: |
+          echo "Submodule status:"
+          git submodule status
+          echo ""
+          echo ".gitmodules content:"
+          cat .gitmodules
+
+      - name: Check SubRepo content
+        run: |
+          echo "List files in MainRepo:"
+          ls -la
+          echo ""
+          echo "List files in SubRepo:"
+          ls -la SubRepo
+          echo ""
+          echo "SubRepo commit:"
+          cd SubRepo
+          git rev-parse HEAD
+          git log --oneline -5
